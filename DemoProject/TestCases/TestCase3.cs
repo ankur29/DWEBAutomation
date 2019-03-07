@@ -24,19 +24,20 @@ namespace DemoProject.TestCases
         ExtentTest test, registration, systemHealthCheck;
         ReportGenerator reportGenerator = new ReportGenerator();
         ReadTestData readTestData = new ReadTestData();
-        Dictionary<string, string> testDataMap;
+        Dictionary <string, string> testDataMap;
         public ArrayList keys;
         int columnCount;
         TestData testData;
 
         [SetUp]
+        //Read Test data from excel
         public void setupConfigurations()
         {
             Console.WriteLine("Setup Test Configurations");
-            testDataMap=readTestData.readExcelData();
+            testDataMap = readTestData.readExcelData();
             keys = readTestData.keyCount;
             columnCount = readTestData.totalColumnCount() - 1;
-            Console.WriteLine("readTestData.keyCount="+readTestData.keyCount[0]);
+            Console.WriteLine("readTestData.keyCount=" + readTestData.keyCount[0]);
         }
         [Test]
         //providing browser details
@@ -48,41 +49,49 @@ namespace DemoProject.TestCases
             for (int i = 0; i < testDataMap.Count / columnCount; i++)
             {
                 testData = new TestData();
-                String appUrl = ConfigurationManager.AppSettings["DEV_URL"];      
-            driver = manageDriver.parallelRun(browserName);
-            systemHealthCheck = EnvironmentHealthCheck.checkUrlStatus(appUrl, report);
-            userRegistration = new UserRegistration(driver);
-            new TestRunner(driver).openApplication(appUrl, 6);
-            Console.WriteLine("testDataMap.Count=" + testDataMap.Count);
-            
-                Console.WriteLine("1");
-                test = report.StartTest(testDataMap["TestCaseName_"+ keys[i]], "Account Creation Steps");
-                test.AssignCategory("https://cdn0.iconfinder.com/data/icons/jfk/512/chrome-512.png");
-                test.AssignCategory(browserName);
-                Console.WriteLine("Assigned");
-                testData.firstname= testDataMap["FirstName_" + keys[i]];
-                testData.lastname = testDataMap["LastName_" + keys[i]];
-
-
-                registration = userRegistration.createUser(report,testData);
+                String appUrl = ConfigurationManager.AppSettings["DEV_URL"];
+                test = report.StartTest(testDataMap["TestCaseName_" + keys[i]], "Account Creation Steps");
+                //Application helath check
+                systemHealthCheck = EnvironmentHealthCheck.checkUrlStatus(appUrl, report);
+                Console.WriteLine(systemHealthCheck.GetCurrentStatus().ToString());
+                if (systemHealthCheck.GetCurrentStatus().ToString().Equals("Pass"))
+                {
+                    driver = manageDriver.parallelRun(browserName);
+                    test.AssignCategory(browserName);
+                    Console.WriteLine("Assigned");
+                    testData.firstname = testDataMap["FirstName_" + keys[i]];
+                    testData.lastname = testDataMap["LastName_" + keys[i]];
+                    new TestRunner(driver).openApplication(appUrl, 6);
+                    Console.WriteLine("testDataMap.Count=" + testDataMap.Count);
+                    Console.WriteLine(systemHealthCheck.GetCurrentStatus().ToString());
+                    userRegistration = new UserRegistration(driver);
+                registration = userRegistration.createUser(report, testData);
                 test.AppendChild(systemHealthCheck).AppendChild(registration);
                 report.EndTest(test);
                 report.Flush();
                 driver.Close();
+                }else
+                {
+                    
+                    test.AppendChild(systemHealthCheck);
+                    report.EndTest(test);
+                    report.Flush();
+                    continue;
+                }
             }
-        }        
+        }
 
         [TearDown]
         public void endTest() // This method will be fired at the end of the test
         {
             try
             {
-                driver.Close();
+                //     driver.Close();
             }
             catch (Exception e)
             {
                 Console.WriteLine("Exception=" + e);
-              
+
             }
         }
 

@@ -22,18 +22,17 @@ namespace DemoProject.Library
                 request.Method = "GET";                
                 response = (HttpWebResponse)request.GetResponse();
                 code = (int)response.StatusCode;
-    //            Console.WriteLine(code);
+               
                 if (code == 200)
                 {
                     responseCode.Log(LogStatus.Pass, "<a href=" + appUrl + ">" + appUrl + "</a>", "Up and Running");
                 }else
                 {
                     responseCode.Log(LogStatus.Fail, "<a href=" + appUrl + ">" + appUrl + "</a>", code + " Down");
-
+                    
                 }
 
-                //StreamReader sr = new StreamReader(response.GetResponseStream());
-                //Console.Write(sr.ReadToEnd());
+
             }
             catch (WebException e)
             {

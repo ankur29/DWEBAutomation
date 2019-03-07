@@ -8,6 +8,7 @@ namespace DemoProject.BrowserUtility
     //Initiate Webdriver instance
    public class TestRunner
     {
+
           IWebDriver driver;
 
         public TestRunner(IWebDriver _driver)

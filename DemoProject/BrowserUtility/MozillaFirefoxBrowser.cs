@@ -14,8 +14,8 @@ namespace DemoProject.BrowserUtility
         //initiating mozilla browser
         public IWebDriver initiateBrowser()
         {
-            Console.WriteLine("Initiate Mozilla Browser");
             FirefoxDriverService service = FirefoxDriverService.CreateDefaultService(@"E:\Drivers", "geckodriver.exe");
+            Console.WriteLine("Mozilla Firefox Browser Instance is created");
             return new FirefoxDriver(service);
         }
     }
