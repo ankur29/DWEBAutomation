@@ -84,7 +84,7 @@ namespace DemoProject.TestCases
         {
             try
             {
-                driver.Close();
+          //      driver.Close();
                 //report.EndTest(test);
                 //report.Flush();
                 //report.Close();

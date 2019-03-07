@@ -9,9 +9,9 @@ namespace DemoProject.BrowserUtility
     {
         //initiating Chrome browser
         public IWebDriver initiateBrowser()
-        {
-            Console.WriteLine("Initiate Browser");
+        {            
             ChromeDriverService service = ChromeDriverService.CreateDefaultService(@"E:\Drivers", "chromedriver.exe");
+            Console.WriteLine("Chrome Browser Instance is created");
             return new ChromeDriver(service);
         }
     }

@@ -11,7 +11,11 @@ namespace DemoProject.TestCases
 {
     class ManageDriver
     {
-
+        /// <summary>
+        /// select the browser
+        /// </summary>
+        /// <param name="browserName"></param>
+        /// <returns>Instance of Iwebdriver</returns>
         public IWebDriver parallelRun(String browserName)
         {
 
