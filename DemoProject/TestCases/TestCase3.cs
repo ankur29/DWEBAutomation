@@ -1,5 +1,6 @@
 ﻿using DemoProject.BrowserUtility;
 using DemoProject.BusinessUitilities;
+using DemoProject.Entities;
 using DemoProject.Library;
 using DemoProject.ReportUtility;
 using NUnit.Framework;
@@ -8,6 +9,7 @@ using RelevantCodes.ExtentReports;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 
 namespace DemoProject.TestCases
 {
@@ -25,6 +27,8 @@ namespace DemoProject.TestCases
         Dictionary<string, string> testDataMap;
         public ArrayList keys;
         int columnCount;
+        TestData testData;
+
         [SetUp]
         public void setupConfigurations()
         {
@@ -40,9 +44,11 @@ namespace DemoProject.TestCases
         //Test cases steps
         public void runTest2(String browserName)
         {
+            testData = new TestData();
             for (int i = 0; i < testDataMap.Count / columnCount; i++)
             {
-                String appUrl = "https://accounts.google.com/signin";      
+                testData = new TestData();
+                String appUrl = ConfigurationManager.AppSettings["DEV_URL"];      
             driver = manageDriver.parallelRun(browserName);
             systemHealthCheck = EnvironmentHealthCheck.checkUrlStatus(appUrl, report);
             userRegistration = new UserRegistration(driver);
@@ -54,11 +60,11 @@ namespace DemoProject.TestCases
                 test.AssignCategory("https://cdn0.iconfinder.com/data/icons/jfk/512/chrome-512.png");
                 test.AssignCategory(browserName);
                 Console.WriteLine("Assigned");
-                string firstName = testDataMap["FirstName_" + keys[i]];
-                string lastName = testDataMap["LastName_" + keys[i]];
+                testData.firstname= testDataMap["FirstName_" + keys[i]];
+                testData.lastname = testDataMap["LastName_" + keys[i]];
 
 
-                registration = userRegistration.createUser(report,firstName,lastName);
+                registration = userRegistration.createUser(report,testData);
                 test.AppendChild(systemHealthCheck).AppendChild(registration);
                 report.EndTest(test);
                 report.Flush();

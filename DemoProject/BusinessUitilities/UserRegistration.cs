@@ -1,4 +1,5 @@
 ﻿using DemoProject.BrowserUtility;
+using DemoProject.Entities;
 using DemoProject.Library;
 using DemoProject.ObjectRepository;
 using OpenQA.Selenium;
@@ -27,15 +28,15 @@ namespace DemoProject.BusinessUitilities
             driver.FindElement(By.XPath(RegistrationPage.lastName)).SendKeys("TestLastName");
         }
 
-        public ExtentTest createUser(ExtentReports report,String firstName,String lastName)
+        public ExtentTest createUser(ExtentReports report, TestData testdata )
         {
             ExtentTest registration = report.StartTest("SignUp");
             try
             {                              
                 performAction.clickButton(RegistrationPage.CREATEACCOUNT_SIGNUP_XPATH, "CREATEACCOUNT_SIGNUP_XPATH");
                // driver.FindElement(By.XPath(RegistrationPage.createAccount)).Click();
-                driver.FindElement(By.XPath(RegistrationPage.firstName)).SendKeys(firstName);
-                driver.FindElement(By.XPath(RegistrationPage.lastName)).SendKeys(lastName);
+                driver.FindElement(By.XPath(RegistrationPage.firstName)).SendKeys(testdata.firstname);
+                driver.FindElement(By.XPath(RegistrationPage.lastName)).SendKeys(testdata.lastname);
                 registration.Log(LogStatus.Pass, "Sign UP Test Case");     
             }
             catch (Exception e)

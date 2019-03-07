@@ -2,6 +2,7 @@
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,8 +38,8 @@ namespace DemoProject.TestCases
         //contains browser name
         public static IEnumerable<String> parallelBrowsers()
         {
-            String[] browserList = { "Firefox", "Chrome" };
-
+            List<String> browserList = new List<string>(ConfigurationManager.AppSettings["Browsers"].Split(new char[] { ';' }));
+            //String[] browserList = { "Firefox", "Chrome" };            
             foreach (String s in browserList)
             {
                 yield return s;

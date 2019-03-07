@@ -1,5 +1,6 @@
 ﻿using DemoProject.BrowserUtility;
 using DemoProject.BusinessUitilities;
+using DemoProject.Entities;
 using DemoProject.Library;
 using DemoProject.ObjectRepository;
 using DemoProject.ReportUtility;
@@ -9,6 +10,7 @@ using RelevantCodes.ExtentReports;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 
 namespace DemoProject.TestCases
 {
@@ -26,6 +28,7 @@ namespace DemoProject.TestCases
         Dictionary<string, string> testDataMap;
         public ArrayList keys;
         int columnCount;
+        TestData testData;
 
         [SetUp]
         public void setupConfigurations()
@@ -43,11 +46,12 @@ namespace DemoProject.TestCases
         [TestCaseSource(typeof(ManageDriver), "parallelBrowsers")]
         public void runTest1(String browserName) 
         {
+            testData = new TestData();
             for (int i = 0; i < testDataMap.Count / columnCount; i++)
             {
                 //try
                 //{
-                    String appUrl = "https://accounts.google.com/signin";
+                    String appUrl = ConfigurationManager.AppSettings["DEV_URL"];
                     
                     systemHealthCheck = EnvironmentHealthCheck.checkUrlStatus(appUrl, report);
                     driver = manageDriver.parallelRun(browserName);
@@ -58,9 +62,9 @@ namespace DemoProject.TestCases
                 test.AssignCategory(browserName);
                 
                 Console.WriteLine("Assigned");
-                string firstName = testDataMap["FirstName_" + keys[i]];
-                string lastName = testDataMap["LastName_" + keys[i]];
-                registration = userRegistration.createUser(report, firstName, lastName);
+                testData.firstname = testDataMap["FirstName_" + keys[i]];
+                testData.lastname = testDataMap["LastName_" + keys[i]];
+                registration = userRegistration.createUser(report, testData);
                 test.AppendChild(systemHealthCheck).AppendChild(registration);
                 report.EndTest(test);
                 report.Flush();
